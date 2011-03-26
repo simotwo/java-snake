@@ -31,6 +31,7 @@ public class Main implements KeyListener, WindowListener { // , Runnable {
 	public final static int EMPTY = 0;
 	public final static int FOOD_BONUS = 1;
 	public final static int FOOD_MALUS = 2;
+	public final static int BIG_FOOD_BONUS = 3;
 	public final static int SNAKE = 4;
 	private int[][] grid = null;
 	private int[][] snake = null;
@@ -38,8 +39,8 @@ public class Main implements KeyListener, WindowListener { // , Runnable {
 	private int next_direction = -1;
 	private int height = 600;
 	private int width = 600;
-	private int gameSize = 20;
-	private long speed = 100;
+	private int gameSize = 40;
+	private long speed = 50;
 	private Frame frame = null;
 	private Canvas canvas = null;
 	private Graphics graph = null;
@@ -192,8 +193,21 @@ public class Main implements KeyListener, WindowListener { // , Runnable {
 							graph.fillOval(i * gridUnit, j * gridUnit,
 									gridUnit, gridUnit);
 							break;
+							
 						case FOOD_BONUS:
-							graph.setColor(Color.BLACK);
+							graph.setColor(Color.darkGray);
+							graph.fillOval(i * gridUnit + gridUnit / 4, j
+									* gridUnit + gridUnit / 4, gridUnit / 2,
+									gridUnit / 2);
+							break;
+						case FOOD_MALUS:
+							graph.setColor(Color.RED);
+							graph.fillOval(i * gridUnit + gridUnit / 4, j
+									* gridUnit + gridUnit / 4, gridUnit / 2,
+									gridUnit / 2);
+							break;
+						case BIG_FOOD_BONUS:
+							graph.setColor(Color.GREEN);
 							graph.fillOval(i * gridUnit + gridUnit / 4, j
 									* gridUnit + gridUnit / 4, gridUnit / 2,
 									gridUnit / 2);
