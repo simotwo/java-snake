@@ -40,7 +40,7 @@ public class Main implements KeyListener, WindowListener { // , Runnable {
 	private int height = 600;
 	private int width = 600;
 	private int gameSize = 40;
-	private long speed = 50;
+	private long speed = 70;
 	private Frame frame = null;
 	private Canvas canvas = null;
 	private Graphics graph = null;
@@ -49,9 +49,12 @@ public class Main implements KeyListener, WindowListener { // , Runnable {
 	// private int lasty = 0;
 	private boolean game_over = false;
 	private boolean paused = false;
+	
+	private int grow = 0;
 
 	private long cycleTime = 0;
 	private long sleepTime = 0;
+	private int bonusTime = 0;
 
 	/**
 	 * @param args
@@ -88,30 +91,30 @@ public class Main implements KeyListener, WindowListener { // , Runnable {
 
 		canvas.setIgnoreRepaint(true);
 		canvas.setBackground(Color.WHITE);
-		/*
-		 * try { canvas.createBufferStrategy(2, new BufferCapabilities( new
-		 * ImageCapabilities(true), new ImageCapabilities(true),
-		 * BufferCapabilities.FlipContents.BACKGROUND)); } catch (AWTException
-		 * ex) { Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null,
-		 * ex); }
-		 */
+		
+//		  try { canvas.createBufferStrategy(2, new BufferCapabilities( new
+//		  ImageCapabilities(true), new ImageCapabilities(true),
+//		  BufferCapabilities.FlipContents.BACKGROUND)); } catch (AWTException
+//		  ex) { Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null,
+//		  ex); }
+		 
 
 		canvas.createBufferStrategy(2);
-		/*
-		 * BufferCapabilities buffCapa = canvas.getGraphicsConfiguration()
-		 * .getBufferCapabilities(); System.out.println("Multibuff = " +
-		 * buffCapa.isMultiBufferAvailable() + ", Page flipping = " +
-		 * buffCapa.isPageFlipping() + ", FullScreen required = " +
-		 * buffCapa.isFullScreenRequired() + ", FlipContent = " +
-		 * buffCapa.getFlipContents());
-		 */
+		
+//		  BufferCapabilities buffCapa = canvas.getGraphicsConfiguration()
+//		  .getBufferCapabilities(); System.out.println("Multibuff = " +
+//		  buffCapa.isMultiBufferAvailable() + ", Page flipping = " +
+//		  buffCapa.isPageFlipping() + ", FullScreen required = " +
+//		  buffCapa.isFullScreenRequired() + ", FlipContent = " +
+//		  buffCapa.getFlipContents());
+		 
 		strategy = canvas.getBufferStrategy();
 		graph = strategy.getDrawGraphics();
 
 		initGame();
 
-		// Start rendering in a separate dedicated thread
 		renderGame();
+		// Start rendering in a separate dedicated thread
 		// new Thread(this).start();
 	}
 
@@ -155,7 +158,7 @@ public class Main implements KeyListener, WindowListener { // , Runnable {
 		snake[0][0] = gameSize/2;
 		snake[0][1] = gameSize/2;
 		grid[gameSize/2][gameSize/2] = SNAKE;
-		placeBonus();
+		placeBonus(FOOD_BONUS);
 
 	}
 
@@ -253,7 +256,6 @@ public class Main implements KeyListener, WindowListener { // , Runnable {
 	}
 
 	private void moveSnake() {
-		boolean grow = false;
 
 		if (direction < 0) {
 			return;
@@ -304,9 +306,13 @@ public class Main implements KeyListener, WindowListener { // , Runnable {
 		if(fut_y >= gameSize)
 			fut_y = 0;
 		
-		if (grid[fut_x][fut_y] == FOOD_BONUS) {
-			grow = true;
+		if (grid[fut_x][fut_y] == FOOD_BONUS)
+		{
+			grow ++;
+			placeBonus(FOOD_BONUS);
 		}
+		else if(grid[fut_x][fut_y] == BIG_FOOD_BONUS)
+			grow += 3;
 
 		snake[0][0] = fut_x;
 		snake[0][1] = fut_y;
@@ -344,23 +350,40 @@ public class Main implements KeyListener, WindowListener { // , Runnable {
 			grid[snake[i][0]][snake[i][1]] = SNAKE;
 		}
 
-		if (grow) {
+		bonusTime --;
+		if (bonusTime == 0)
+		{
+			for (i = 0; i < gameSize; i++)
+			{
+				for (int j = 0; j < gameSize; j++)
+				{
+					if(grid[i][j]==BIG_FOOD_BONUS)
+						grid[i][j]=EMPTY;
+				}
+			}
+		}
+		if (grow > 0) {
 			snake[i][0] = tempx;
 			snake[i][1] = tempy;
 			// lastx = tempx;
 			// lasty = tempy;
 			grid[snake[i][0]][snake[i][1]] = SNAKE;
-			placeBonus();
+			if(getScore()%10 == 0)
+			{
+				placeBonus(BIG_FOOD_BONUS);
+				bonusTime = 100;
+			}
+			grow --;
 		}
 	}
 
-	private void placeBonus() {
+	private void placeBonus(int bonus_type) {
 		int x = (int) (Math.random() * 1000) % gameSize;
 		int y = (int) (Math.random() * 1000) % gameSize;
 		if (grid[x][y] == EMPTY) {
-			grid[x][y] = FOOD_BONUS;
+			grid[x][y] = bonus_type;
 		} else {
-			placeBonus();
+			placeBonus(bonus_type);
 		}
 	}
 
@@ -456,6 +479,10 @@ public class Main implements KeyListener, WindowListener { // , Runnable {
 
 	}
 
+	
+	
+	
+	
 	// UNNUSED IMPLEMENTED FUNCTIONS
 	public void keyTyped(KeyEvent ke) {
 		// throw new UnsupportedOperationException("Not supported yet.");
