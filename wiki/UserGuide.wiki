@@ -18,8 +18,8 @@ Here are the controls. You can't change them, sorry :
 
 ==Bonus==
 
-  * *Grey bonus* : A simple bonus that grows your snake with 1 (there's always one in the board).
-  * *Green bonus* : Appears each 10 points you earn. They stay during 100 moves (approx 5 seconds) and grows your snake with 3
+  * *Grey bonus* : A simple bonus that grows your snake by 1 (there's always one in the board).
+  * *Green bonus* : Appears each 10 points you earn. They stay during 100 moves (approx 5 seconds) and grows your snake by 3
 
 ==Other==
 
