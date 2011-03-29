@@ -24,7 +24,7 @@ Here are the controls. You can't change them, sorry :
 ==Other==
 
   * When you reach a game limit (window border), your snake will continue at the opposite side.
-  * If your snake eats a part of himself, the the game is over.
+  * If your snake eats a part of himself, the game is over.
 
 
 ===Have Fun===
