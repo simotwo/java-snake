@@ -1,0 +1,21 @@
+#summary Explaining controls
+#labels Featured
+
+= Introduction =
+
+This wiki page is a user guide. The game is quite simple, but heres a reminder about how it works.
+
+
+= Details =
+
+=Controls=
+Here are the controls. You can't change them, sorry :
+
+  * UP, DOWN, LEFT, RIGHT keys : Control your snake
+  * SPACE : Pause the game
+  * ESCAPE : Exit the game
+  * F11 : Switch to/from a bigger frame
+
+=Bonus=
+
+  * Grey bonus : A simple bonus that grows your snake from 1
