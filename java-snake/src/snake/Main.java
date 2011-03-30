@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  * 
  * @author Peuch
  */
-public class Main implements KeyListener, WindowListener { // , Runnable {
+public class Main implements KeyListener, WindowListener {
 
 	// KEYS MAP
 	public final static int UP = 0;
@@ -45,8 +45,6 @@ public class Main implements KeyListener, WindowListener { // , Runnable {
 	private Canvas canvas = null;
 	private Graphics graph = null;
 	private BufferStrategy strategy = null;
-	// private int lastx = 0;
-	// private int lasty = 0;
 	private boolean game_over = false;
 	private boolean paused = false;
 	
@@ -92,30 +90,14 @@ public class Main implements KeyListener, WindowListener { // , Runnable {
 		canvas.setIgnoreRepaint(true);
 		canvas.setBackground(Color.WHITE);
 		
-//		  try { canvas.createBufferStrategy(2, new BufferCapabilities( new
-//		  ImageCapabilities(true), new ImageCapabilities(true),
-//		  BufferCapabilities.FlipContents.BACKGROUND)); } catch (AWTException
-//		  ex) { Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null,
-//		  ex); }
-		 
-
 		canvas.createBufferStrategy(2);
 		
-//		  BufferCapabilities buffCapa = canvas.getGraphicsConfiguration()
-//		  .getBufferCapabilities(); System.out.println("Multibuff = " +
-//		  buffCapa.isMultiBufferAvailable() + ", Page flipping = " +
-//		  buffCapa.isPageFlipping() + ", FullScreen required = " +
-//		  buffCapa.isFullScreenRequired() + ", FlipContent = " +
-//		  buffCapa.getFlipContents());
-		 
 		strategy = canvas.getBufferStrategy();
 		graph = strategy.getDrawGraphics();
 
 		initGame();
 
 		renderGame();
-		// Start rendering in a separate dedicated thread
-		// new Thread(this).start();
 	}
 
 	public void mainLoop() {
@@ -162,15 +144,6 @@ public class Main implements KeyListener, WindowListener { // , Runnable {
 
 	}
 
-	/*
-	 * public void run() {
-	 * 
-	 * while (true) { renderGame(); try { Thread.sleep(10); } catch
-	 * (InterruptedException ex) {
-	 * Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex); } } }
-	 * 
-	 * //
-	 */
 	private void renderGame() {
 		int gridUnit = height / gameSize;
 		canvas.paint(graph);
@@ -317,10 +290,7 @@ public class Main implements KeyListener, WindowListener { // , Runnable {
 		snake[0][0] = fut_x;
 		snake[0][1] = fut_y;
 
-		if ((grid[snake[0][0]][snake[0][1]] == SNAKE)) { // && ((snake[0][0] !=
-															// lastx) &&
-															// (snake[0][1] !=
-															// lasty))) {
+		if ((grid[snake[0][0]][snake[0][1]] == SNAKE)) { 
 			gameOver();
 			return;
 		}
@@ -330,8 +300,6 @@ public class Main implements KeyListener, WindowListener { // , Runnable {
 
 		for (i = 1; i < gameSize * gameSize; i++) {
 			if ((snake[i][0] < 0) || (snake[i][1] < 0)) {
-				// lastx = tempx;// snake[i - 1][0];
-				// lasty = tempy;// snake[i - 1][0];
 				break;
 			}
 			grid[snake[i][0]][snake[i][1]] = EMPTY;
@@ -365,8 +333,6 @@ public class Main implements KeyListener, WindowListener { // , Runnable {
 		if (grow > 0) {
 			snake[i][0] = tempx;
 			snake[i][1] = tempy;
-			// lastx = tempx;
-			// lasty = tempy;
 			grid[snake[i][0]][snake[i][1]] = SNAKE;
 			if(getScore()%10 == 0)
 			{
@@ -399,7 +365,6 @@ public class Main implements KeyListener, WindowListener { // , Runnable {
 
 		switch (code) {
 		case KeyEvent.VK_UP:
-			// System.out.println("UP");
 			if (direction != DOWN) {
 				next_direction = UP;
 			}
@@ -407,7 +372,6 @@ public class Main implements KeyListener, WindowListener { // , Runnable {
 			break;
 
 		case KeyEvent.VK_DOWN:
-			// System.out.println("DOWN");
 			if (direction != UP) {
 				next_direction = DOWN;
 			}
@@ -415,7 +379,6 @@ public class Main implements KeyListener, WindowListener { // , Runnable {
 			break;
 
 		case KeyEvent.VK_LEFT:
-			// System.out.println("LEFT");
 			if (direction != RIGHT) {
 				next_direction = LEFT;
 			}
@@ -423,7 +386,6 @@ public class Main implements KeyListener, WindowListener { // , Runnable {
 			break;
 
 		case KeyEvent.VK_RIGHT:
-			// System.out.println("RIGHT");
 			if (direction != LEFT) {
 				next_direction = RIGHT;
 			}
@@ -474,7 +436,6 @@ public class Main implements KeyListener, WindowListener { // , Runnable {
 	}
 
 	public void windowClosing(WindowEvent we) {
-		// throw new UnsupportedOperationException("Not supported yet.");
 		System.exit(0);
 
 	}
@@ -484,35 +445,12 @@ public class Main implements KeyListener, WindowListener { // , Runnable {
 	
 	
 	// UNNUSED IMPLEMENTED FUNCTIONS
-	public void keyTyped(KeyEvent ke) {
-		// throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	public void keyReleased(KeyEvent ke) {
-		// throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	public void windowOpened(WindowEvent we) {
-		// throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	public void windowClosed(WindowEvent we) {
-		// throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	public void windowIconified(WindowEvent we) {
-		// throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	public void windowDeiconified(WindowEvent we) {
-		// throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	public void windowActivated(WindowEvent we) {
-		// throw new UnsupportedOperationException("Not supported yet.");
-	}
-
-	public void windowDeactivated(WindowEvent we) {
-		// throw new UnsupportedOperationException("Not supported yet.");
-	}
+	public void keyTyped(KeyEvent ke) {}
+	public void keyReleased(KeyEvent ke) {}
+	public void windowOpened(WindowEvent we) {}
+	public void windowClosed(WindowEvent we) {}
+	public void windowIconified(WindowEvent we) {}
+	public void windowDeiconified(WindowEvent we) {}
+	public void windowActivated(WindowEvent we) {}
+	public void windowDeactivated(WindowEvent we) {}
 }
