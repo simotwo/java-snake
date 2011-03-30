@@ -1,5 +1,6 @@
-
 package snake;
+
+
 
 import java.awt.Canvas;
 import java.awt.Color;
@@ -20,7 +21,8 @@ import java.util.logging.Logger;
  * 
  * @author Peuch
  */
-public class Main implements KeyListener, WindowListener {
+ 
+public class Snake implements KeyListener, WindowListener {
 
 	// KEYS MAP
 	public final static int UP = 0;
@@ -48,23 +50,28 @@ public class Main implements KeyListener, WindowListener {
 	private boolean game_over = false;
 	private boolean paused = false;
 	
+	//private boolean food_malus_eaten = false;
+	private int score = 0;
 	private int grow = 0;
+	
+	private int seconde,minute,milliseconde = 0; // Clock values
 
 	private long cycleTime = 0;
 	private long sleepTime = 0;
 	private int bonusTime = 0;
+	private int malusTime = 0;
 
 	/**
 	 * @param args
 	 *            the command line arguments
 	 */
 	public static void main(String[] args) {
-		Main game = new Main();
+		Snake game = new Snake();
 		game.init();
 		game.mainLoop();
 	}
 
-	public Main() {
+	public Snake() {
 		super();
 		frame = new Frame();
 		canvas = new Canvas();
@@ -117,7 +124,7 @@ public class Main implements KeyListener, WindowListener {
 			try {
 				Thread.sleep(sleepTime);
 			} catch (InterruptedException ex) {
-				Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null,
+				Logger.getLogger(Snake.class.getName()).log(Level.SEVERE, null,
 						ex);
 			}
 		}
@@ -141,6 +148,7 @@ public class Main implements KeyListener, WindowListener {
 		snake[0][1] = gameSize/2;
 		grid[gameSize/2][gameSize/2] = SNAKE;
 		placeBonus(FOOD_BONUS);
+		
 
 	}
 
@@ -199,6 +207,8 @@ public class Main implements KeyListener, WindowListener {
 				if (game_over) {
 					graph.setColor(Color.RED);
 					graph.drawString("GAME OVER", height / 2 - 30, height / 2);
+					graph.drawString("YOUR SCORE : " + score, height / 2 - 40, height / 2 +50);
+					graph.drawString("YOUR TIME : " + getTime(), height / 2 - 42, height / 2 +100);
 				}
 				else if (paused) {
 					graph.setColor(Color.RED);
@@ -206,7 +216,8 @@ public class Main implements KeyListener, WindowListener {
 				}
 
 				graph.setColor(Color.BLACK);
-				graph.drawString("SCORE = " + getScore(), 10, 20);
+				graph.drawString("SCORE = " + score, 10, 20);
+				graph.drawString("TIME = " + getTime(), 100, 20); //Clock
 
 				graph.dispose();
 			} while (strategy.contentsRestored());
@@ -217,16 +228,40 @@ public class Main implements KeyListener, WindowListener {
 		} while (strategy.contentsLost());
 	}
 
-	private int getScore() {
+/*	private int getScore() {
 		int score = 0;
 		for (int i = 0; i < gameSize * gameSize; i++) {
 			if ((snake[i][0] < 0) || (snake[i][1] < 0)) {
 				break;
 			}
 			score++;
+			
+			if (food_malus_eaten) {
+				score--;
+			}
 		}
 		return score;
+	} */
+	
+	private String getTime() {
+		String temps= new String(minute + ":" + seconde);
+		if (direction<0 || paused)
+				return temps;
+		
+		milliseconde++;
+		if (milliseconde==14){
+		seconde++;
+		milliseconde=0;}
+		if (seconde==60){
+			seconde=0;
+			minute++;
+			//centiseconde = 0;
+		}
+		
+		return temps;
+	
 	}
+	
 
 	private void moveSnake() {
 
@@ -281,11 +316,27 @@ public class Main implements KeyListener, WindowListener {
 		
 		if (grid[fut_x][fut_y] == FOOD_BONUS)
 		{
+			//food_malus_eaten=false;
 			grow ++;
+			score++;
 			placeBonus(FOOD_BONUS);
+			
+		}
+		if (grid[fut_x][fut_y] == FOOD_MALUS)
+		{
+			//Score--;
+			//food_malus_eaten=true;
+			grow += 2;
+			score--;
+			//placeMalus(FOOD_MALUS);
+			
 		}
 		else if(grid[fut_x][fut_y] == BIG_FOOD_BONUS)
+		{
+			//food_malus_eaten=false;
 			grow += 3;
+			score +=3;
+		}
 
 		snake[0][0] = fut_x;
 		snake[0][1] = fut_y;
@@ -330,14 +381,31 @@ public class Main implements KeyListener, WindowListener {
 				}
 			}
 		}
+		malusTime --;
+		if (malusTime == 0)
+		{
+			for (i = 0; i < gameSize; i++)
+			{
+				for (int j = 0; j < gameSize; j++)
+				{
+					if(grid[i][j]==FOOD_MALUS)
+						grid[i][j]=EMPTY;
+				}
+			}
+		}
 		if (grow > 0) {
 			snake[i][0] = tempx;
 			snake[i][1] = tempy;
 			grid[snake[i][0]][snake[i][1]] = SNAKE;
-			if(getScore()%10 == 0)
+			if(score%10 == 0)
 			{
 				placeBonus(BIG_FOOD_BONUS);
 				bonusTime = 100;
+			}
+			if(score%5 == 0)
+			{
+				placeMalus(FOOD_MALUS);
+				malusTime = 100;
 			}
 			grow --;
 		}
@@ -350,6 +418,16 @@ public class Main implements KeyListener, WindowListener {
 			grid[x][y] = bonus_type;
 		} else {
 			placeBonus(bonus_type);
+		}
+	}
+	
+	private void placeMalus(int malus_type) {
+		int x = (int) (Math.random() * 1000) % gameSize;
+		int y = (int) (Math.random() * 1000) % gameSize;
+		if (grid[x][y] == EMPTY) {
+			grid[x][y] = malus_type;
+		} else {
+			placeMalus(malus_type);
 		}
 	}
 
