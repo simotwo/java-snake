@@ -25,6 +25,7 @@ Here are the controls. You can't change them, sorry :
 
   * When you reach a game limit (window border), your snake will continue at the opposite side.
   * If your snake eats a part of himself, the game is over.
+  * To start the game, launch *java -jar snake.jar* or with Windows you can simply double click on the file.
 
 
 ===Have Fun===
