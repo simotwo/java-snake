@@ -524,18 +524,11 @@ public class Snake implements KeyListener, WindowListener {
 	
 	// UNNUSED IMPLEMENTED FUNCTIONS
 	public void keyTyped(KeyEvent ke) {}
-
 	public void keyReleased(KeyEvent ke) {}
-
 	public void windowOpened(WindowEvent we) {}
-
 	public void windowClosed(WindowEvent we) {}
-
 	public void windowIconified(WindowEvent we) {}
-
 	public void windowDeiconified(WindowEvent we) {}
-
 	public void windowActivated(WindowEvent we) {}
-
 	public void windowDeactivated(WindowEvent we) {}
 }
