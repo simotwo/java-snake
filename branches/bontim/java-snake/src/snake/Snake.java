@@ -21,6 +21,7 @@ import java.util.logging.Logger;
  * 
  * @author Peuch
  */
+ 
 public class Snake implements KeyListener, WindowListener { // , Runnable {
 
 	// KEYS MAP
