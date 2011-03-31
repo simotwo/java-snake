@@ -1,5 +1,6 @@
-
 package snake;
+
+
 
 import java.awt.Canvas;
 import java.awt.Color;
@@ -20,7 +21,7 @@ import java.util.logging.Logger;
  * 
  * @author Peuch
  */
-public class Main implements KeyListener, WindowListener {
+public class Main implements KeyListener, WindowListener { // , Runnable {
 
 	// KEYS MAP
 	public final static int UP = 0;
@@ -45,10 +46,16 @@ public class Main implements KeyListener, WindowListener {
 	private Canvas canvas = null;
 	private Graphics graph = null;
 	private BufferStrategy strategy = null;
+	// private int lastx = 0;
+	// private int lasty = 0;
 	private boolean game_over = false;
 	private boolean paused = false;
 	
 	private int grow = 0;
+	
+	private String getReady;
+	
+	private int seconde,minute = 0; // parametres horloge
 
 	private long cycleTime = 0;
 	private long sleepTime = 0;
@@ -75,6 +82,8 @@ public class Main implements KeyListener, WindowListener {
 
 	public void init() {
 
+		getReady = new String("GET READY !");
+		
 		frame.setSize(width + 7, height + 27);
 		frame.setResizable(false);
 		frame.setLocationByPlatform(true);
@@ -90,14 +99,30 @@ public class Main implements KeyListener, WindowListener {
 		canvas.setIgnoreRepaint(true);
 		canvas.setBackground(Color.WHITE);
 		
+//		  try { canvas.createBufferStrategy(2, new BufferCapabilities( new
+//		  ImageCapabilities(true), new ImageCapabilities(true),
+//		  BufferCapabilities.FlipContents.BACKGROUND)); } catch (AWTException
+//		  ex) { Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null,
+//		  ex); }
+		 
+
 		canvas.createBufferStrategy(2);
 		
+//		  BufferCapabilities buffCapa = canvas.getGraphicsConfiguration()
+//		  .getBufferCapabilities(); System.out.println("Multibuff = " +
+//		  buffCapa.isMultiBufferAvailable() + ", Page flipping = " +
+//		  buffCapa.isPageFlipping() + ", FullScreen required = " +
+//		  buffCapa.isFullScreenRequired() + ", FlipContent = " +
+//		  buffCapa.getFlipContents());
+		 
 		strategy = canvas.getBufferStrategy();
 		graph = strategy.getDrawGraphics();
 
 		initGame();
 
 		renderGame();
+		// Start rendering in a separate dedicated thread
+		// new Thread(this).start();
 	}
 
 	public void mainLoop() {
@@ -117,14 +142,13 @@ public class Main implements KeyListener, WindowListener {
 			try {
 				Thread.sleep(sleepTime);
 			} catch (InterruptedException ex) {
-				Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null,
+				Logger.getLogger(Snake.class.getName()).log(Level.SEVERE, null,
 						ex);
 			}
 		}
 	}
 
 	private void initGame() {
-
 		// Initialise tabs
 		for (int i = 0; i < gameSize; i++) {
 			for (int j = 0; j < gameSize; j++) {
@@ -144,6 +168,15 @@ public class Main implements KeyListener, WindowListener {
 
 	}
 
+	/*
+	 * public void run() {
+	 * 
+	 * while (true) { renderGame(); try { Thread.sleep(10); } catch
+	 * (InterruptedException ex) {
+	 * Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex); } } }
+	 * 
+	 * //
+	 */
 	private void renderGame() {
 		int gridUnit = height / gameSize;
 		canvas.paint(graph);
@@ -194,11 +227,19 @@ public class Main implements KeyListener, WindowListener {
 					}
 				}
 
-				graph.setFont(new Font(Font.SANS_SERIF, Font.BOLD, height / 40));
+	//			graph.setFont(new Font(Font.Font.SANS_SERIF, Font.BOLD, height / 40));
 
+				if(direction<0 && getReady!="") {
+					graph.setColor(Color.RED);
+					graph.drawString(getReady, height / 2 - 30, height / 2);
+				}
+				else {getReady="";}
+				
 				if (game_over) {
 					graph.setColor(Color.RED);
 					graph.drawString("GAME OVER", height / 2 - 30, height / 2);
+					graph.drawString("Votre Score : " + getScore(), height / 2 - 38, height / 2 + 50);
+					graph.drawString("Votre Temps : " + getTemps(), height / 2 - 50, height / 2 + 100);
 				}
 				else if (paused) {
 					graph.setColor(Color.RED);
@@ -207,6 +248,7 @@ public class Main implements KeyListener, WindowListener {
 
 				graph.setColor(Color.BLACK);
 				graph.drawString("SCORE = " + getScore(), 10, 20);
+				graph.drawString("TEMPS = " + getTemps(), 100, 20); //horloge Fanch
 
 				graph.dispose();
 			} while (strategy.contentsRestored());
@@ -226,6 +268,20 @@ public class Main implements KeyListener, WindowListener {
 			score++;
 		}
 		return score;
+	}
+	
+	private String getTemps() {
+		String temps = new String(minute + ":" + seconde);
+		if(direction < 0 || paused || game_over) {return temps;}
+		
+		int tempsIntermediaire = ((int)System.currentTimeMillis()/10)*10-((int)System.currentTimeMillis()/100)*100;
+		
+		if(tempsIntermediaire==0) {seconde++;}
+		if(seconde==60) {
+			minute++;
+			seconde=0;
+		}
+		return temps;
 	}
 
 	private void moveSnake() {
@@ -290,7 +346,10 @@ public class Main implements KeyListener, WindowListener {
 		snake[0][0] = fut_x;
 		snake[0][1] = fut_y;
 
-		if ((grid[snake[0][0]][snake[0][1]] == SNAKE)) { 
+		if ((grid[snake[0][0]][snake[0][1]] == SNAKE)) { // && ((snake[0][0] !=
+															// lastx) &&
+															// (snake[0][1] !=
+															// lasty))) {
 			gameOver();
 			return;
 		}
@@ -300,6 +359,8 @@ public class Main implements KeyListener, WindowListener {
 
 		for (i = 1; i < gameSize * gameSize; i++) {
 			if ((snake[i][0] < 0) || (snake[i][1] < 0)) {
+				// lastx = tempx;// snake[i - 1][0];
+				// lasty = tempy;// snake[i - 1][0];
 				break;
 			}
 			grid[snake[i][0]][snake[i][1]] = EMPTY;
@@ -333,6 +394,8 @@ public class Main implements KeyListener, WindowListener {
 		if (grow > 0) {
 			snake[i][0] = tempx;
 			snake[i][1] = tempy;
+			// lastx = tempx;
+			// lasty = tempy;
 			grid[snake[i][0]][snake[i][1]] = SNAKE;
 			if(getScore()%10 == 0)
 			{
@@ -365,6 +428,7 @@ public class Main implements KeyListener, WindowListener {
 
 		switch (code) {
 		case KeyEvent.VK_UP:
+			// System.out.println("UP");
 			if (direction != DOWN) {
 				next_direction = UP;
 			}
@@ -372,6 +436,7 @@ public class Main implements KeyListener, WindowListener {
 			break;
 
 		case KeyEvent.VK_DOWN:
+			// System.out.println("DOWN");
 			if (direction != UP) {
 				next_direction = DOWN;
 			}
@@ -379,6 +444,7 @@ public class Main implements KeyListener, WindowListener {
 			break;
 
 		case KeyEvent.VK_LEFT:
+			// System.out.println("LEFT");
 			if (direction != RIGHT) {
 				next_direction = LEFT;
 			}
@@ -386,6 +452,7 @@ public class Main implements KeyListener, WindowListener {
 			break;
 
 		case KeyEvent.VK_RIGHT:
+			// System.out.println("RIGHT");
 			if (direction != LEFT) {
 				next_direction = RIGHT;
 			}
@@ -436,6 +503,7 @@ public class Main implements KeyListener, WindowListener {
 	}
 
 	public void windowClosing(WindowEvent we) {
+		// throw new UnsupportedOperationException("Not supported yet.");
 		System.exit(0);
 
 	}
@@ -445,12 +513,35 @@ public class Main implements KeyListener, WindowListener {
 	
 	
 	// UNNUSED IMPLEMENTED FUNCTIONS
-	public void keyTyped(KeyEvent ke) {}
-	public void keyReleased(KeyEvent ke) {}
-	public void windowOpened(WindowEvent we) {}
-	public void windowClosed(WindowEvent we) {}
-	public void windowIconified(WindowEvent we) {}
-	public void windowDeiconified(WindowEvent we) {}
-	public void windowActivated(WindowEvent we) {}
-	public void windowDeactivated(WindowEvent we) {}
+	public void keyTyped(KeyEvent ke) {
+		// throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	public void keyReleased(KeyEvent ke) {
+		// throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	public void windowOpened(WindowEvent we) {
+		// throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	public void windowClosed(WindowEvent we) {
+		// throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	public void windowIconified(WindowEvent we) {
+		// throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	public void windowDeiconified(WindowEvent we) {
+		// throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	public void windowActivated(WindowEvent we) {
+		// throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	public void windowDeactivated(WindowEvent we) {
+		// throw new UnsupportedOperationException("Not supported yet.");
+	}
 }
