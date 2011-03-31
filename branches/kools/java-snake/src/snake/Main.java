@@ -200,7 +200,7 @@ public class Main implements KeyListener, WindowListener {
 					}
 				}
 
-				graph.setFont(new Font(Font.Font.SANS_SERIF, Font.BOLD, height / 40));
+				graph.setFont(new Font(Font.SANS_SERIF, Font.BOLD, height / 40));
 
 				if(direction<0 && getReady!="") {
 					graph.setColor(Color.RED);
