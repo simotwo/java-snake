@@ -124,7 +124,7 @@ public class Main implements KeyListener, WindowListener {
 			try {
 				Thread.sleep(sleepTime);
 			} catch (InterruptedException ex) {
-				Logger.getLogger(Snake.class.getName()).log(Level.SEVERE, null,
+				Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null,
 						ex);
 			}
 		}
