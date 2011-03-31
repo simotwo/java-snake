@@ -1,6 +1,5 @@
+
 package snake;
-
-
 
 import java.awt.Canvas;
 import java.awt.Color;
@@ -131,6 +130,7 @@ public class Main implements KeyListener, WindowListener {
 	}
 
 	private void initGame() {
+
 		// Initialise tabs
 		for (int i = 0; i < gameSize; i++) {
 			for (int j = 0; j < gameSize; j++) {
