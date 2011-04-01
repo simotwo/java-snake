@@ -50,13 +50,12 @@ public class Main implements KeyListener, WindowListener {
 	
 	private int grow = 0;
 	
-	private String getReady;
-	
-	private int seconde,minute = 0;
+	private int seconde,minute, intermediateTime = 0;
 
 	private long cycleTime = 0;
 	private long sleepTime = 0;
 	private int bonusTime = 0;
+	private int displayTime = 0;
 
 	/**
 	 * @param args
@@ -78,8 +77,6 @@ public class Main implements KeyListener, WindowListener {
 	}
 
 	public void init() {
-
-		getReady = new String("GET READY !");
 		
 		frame.setSize(width + 7, height + 27);
 		frame.setResizable(false);
@@ -117,7 +114,7 @@ public class Main implements KeyListener, WindowListener {
 			}
 			renderGame();
 			cycleTime = System.currentTimeMillis() - cycleTime;
-			sleepTime = speed - cycleTime;
+			sleepTime = 70 - cycleTime;
 			if (sleepTime < 0)
 				sleepTime = 0;
 			try {
@@ -202,17 +199,22 @@ public class Main implements KeyListener, WindowListener {
 
 				graph.setFont(new Font(Font.SANS_SERIF, Font.BOLD, height / 40));
 
-				if(direction<0 && getReady!="") {
+				if(direction<0) {	
 					graph.setColor(Color.RED);
-					graph.drawString(getReady, height / 2 - 30, height / 2);
+					graph.drawString("GET READY !", height / 2 - 38, height / 2 - 30);
+					graph.drawString("LEVEL 1 !", height / 2 - 30, height / 2);
 				}
-				else {getReady="";}
+				
+				// process levels //
+				else {
+					processLevels();
+				}
 				
 				if (game_over) {
 					graph.setColor(Color.RED);
 					graph.drawString("GAME OVER", height / 2 - 30, height / 2);
-					graph.drawString("Your Score : " + getScore(), height / 2 - 38, height / 2 + 50);
-					graph.drawString("Your Time : " + getTime(), height / 2 - 45, height / 2 + 100);
+					graph.drawString("Your Score : " + getScore(), height / 2 - 38, height / 2 + 30);
+					graph.drawString("Your Time : " + getTime(), height / 2 - 45, height / 2 + 60);
 				}
 				else if (paused) {
 					graph.setColor(Color.RED);
@@ -245,16 +247,53 @@ public class Main implements KeyListener, WindowListener {
 	
 	private String getTime() {
 		String time = new String(minute + ":" + seconde);
-		if(direction < 0 || paused || game_over) {return time;}
 		
-		int intermediateTime = ((int)System.currentTimeMillis()/10)*10-((int)System.currentTimeMillis()/100)*100;
+		if(direction < 0 || paused || game_over) {
+			intermediateTime = (int)(System.currentTimeMillis()/1000 - (System.currentTimeMillis()/10000)*10);
+			return time;
+		}
 		
-		if(intermediateTime==0) {seconde++;}
+		if(intermediateTime != (int)(System.currentTimeMillis()/1000 - (System.currentTimeMillis()/10000)*10)) {
+			seconde++;
+			intermediateTime = (int)(System.currentTimeMillis()/1000 - (System.currentTimeMillis()/10000)*10);
+		}
+		
 		if(seconde==60) {
 			minute++;
 			seconde=0;
 		}
 		return time;
+	}
+	
+	private void processLevels() {
+		
+		graph.setColor(Color.RED);
+		
+		switch(getScore()) {
+				
+			case 20:
+				if(displayTime<=0) {break;}
+				graph.drawString("LEVEL 2 !", height / 2 - 30, height / 2);
+				speed = 60;
+				break;
+				
+			case 40:
+				if(displayTime<=0) {break;}
+				graph.drawString("LEVEL 3 !", height / 2 - 30, height / 2);
+				speed = 50;
+				break;
+				
+			case 60:
+				if(displayTime<=0) {break;}
+				graph.drawString("LEVEL 4 !", height / 2 - 30, height / 2);
+				speed = 40;
+				break;
+				
+			default:
+				displayTime = 30;
+				break;
+		}
+		displayTime--;
 	}
 
 	private void moveSnake() {
