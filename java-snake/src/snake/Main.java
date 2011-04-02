@@ -33,6 +33,7 @@ public class Main implements KeyListener, WindowListener {
 	public final static int FOOD_MALUS = 2;
 	public final static int BIG_FOOD_BONUS = 3;
 	public final static int SNAKE = 4;
+	public final static int SNAKE_HEAD=5;
 	private int[][] grid = null;
 	private int[][] snake = null;
 	private int direction = -1;
@@ -140,7 +141,7 @@ public class Main implements KeyListener, WindowListener {
 
 		snake[0][0] = gameSize/2;
 		snake[0][1] = gameSize/2;
-		grid[gameSize/2][gameSize/2] = SNAKE;
+		grid[gameSize/2][gameSize/2] = SNAKE_HEAD;
 		placeBonus(FOOD_BONUS);
 
 	}
@@ -166,25 +167,31 @@ public class Main implements KeyListener, WindowListener {
 
 						switch (gridCase) {
 						case SNAKE:
-							graph.setColor(Color.BLUE);
+							graph.setColor(new Color(17,14,218));
+							graph.fillOval(i * gridUnit, j * gridUnit,
+									gridUnit, gridUnit);
+							break;
+							
+						case SNAKE_HEAD:
+							graph.setColor(new Color(0,0,0));
 							graph.fillOval(i * gridUnit, j * gridUnit,
 									gridUnit, gridUnit);
 							break;
 							
 						case FOOD_BONUS:
-							graph.setColor(Color.darkGray);
+							graph.setColor(new Color(3,171,14));
 							graph.fillOval(i * gridUnit + gridUnit / 4, j
 									* gridUnit + gridUnit / 4, gridUnit / 2,
 									gridUnit / 2);
 							break;
 						case FOOD_MALUS:
-							graph.setColor(Color.RED);
+							graph.setColor(new Color(244,2,31));
 							graph.fillOval(i * gridUnit + gridUnit / 4, j
 									* gridUnit + gridUnit / 4, gridUnit / 2,
 									gridUnit / 2);
 							break;
 						case BIG_FOOD_BONUS:
-							graph.setColor(Color.GREEN);
+							graph.setColor(new Color(198,39,203));
 							graph.fillOval(i * gridUnit + gridUnit / 4, j
 									* gridUnit + gridUnit / 4, gridUnit / 2,
 									gridUnit / 2);
@@ -312,7 +319,8 @@ public class Main implements KeyListener, WindowListener {
 			tempy = snakey;
 		}
 
-		for (i = 0; i < gameSize * gameSize; i++) {
+		grid[snake[0][0]][snake[0][1]] = SNAKE_HEAD;
+		for (i = 1; i < gameSize * gameSize; i++) {
 			if ((snake[i][0] < 0) || (snake[i][1] < 0)) {
 				break;
 			}
@@ -363,6 +371,8 @@ public class Main implements KeyListener, WindowListener {
 		int code = ke.getKeyCode();
 		Dimension dim;
 		// System.out.println("Key pressed" + ke.toString());
+		
+		paused = false;
 
 		switch (code) {
 		case KeyEvent.VK_UP:
@@ -428,7 +438,7 @@ public class Main implements KeyListener, WindowListener {
 			
 		case KeyEvent.VK_SPACE:
 			if(!game_over)
-				paused = !paused;
+				paused = true;
 			break;
 
 		default:
