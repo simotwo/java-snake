@@ -1,6 +1,8 @@
 #summary Explaining the game basics
 #labels Featured
 
+_This wiki is for version 1.1 from R5._
+
 = Introduction =
 
 This wiki page is a user guide. The game is quite simple, but here's a reminder about how it works.
