@@ -22,7 +22,7 @@ import java.util.logging.Logger;
  * @author Peuch
  */
  
-public class Snake implements KeyListener, WindowListener {
+public class Main implements KeyListener, WindowListener {
 
 	// KEYS MAP
 	public final static int UP = 0;
@@ -66,12 +66,12 @@ public class Snake implements KeyListener, WindowListener {
 	 *            the command line arguments
 	 */
 	public static void main(String[] args) {
-		Snake game = new Snake();
+		Main game = new Main();
 		game.init();
 		game.mainLoop();
 	}
 
-	public Snake() {
+	public Main() {
 		super();
 		frame = new Frame();
 		canvas = new Canvas();
@@ -124,7 +124,7 @@ public class Snake implements KeyListener, WindowListener {
 			try {
 				Thread.sleep(sleepTime);
 			} catch (InterruptedException ex) {
-				Logger.getLogger(Snake.class.getName()).log(Level.SEVERE, null,
+				Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null,
 						ex);
 			}
 		}
