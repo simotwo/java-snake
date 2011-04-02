@@ -53,6 +53,7 @@ public class Main implements KeyListener, WindowListener {
 	private long cycleTime = 0;
 	private long sleepTime = 0;
 	private int bonusTime = 0;
+	private boolean running = true;
 
 	/**
 	 * @param args
@@ -102,9 +103,9 @@ public class Main implements KeyListener, WindowListener {
 
 	public void mainLoop() {
 
-		while (!game_over) {
+		while (running) {
 			cycleTime = System.currentTimeMillis();
-			if(!paused)
+			if(!paused && !game_over)
 			{
 				direction = next_direction;
 				moveSnake();
@@ -421,6 +422,7 @@ public class Main implements KeyListener, WindowListener {
 		 */
 
 		case KeyEvent.VK_ESCAPE:
+			running = false;
 			System.exit(0);
 			break;
 			
@@ -436,8 +438,8 @@ public class Main implements KeyListener, WindowListener {
 	}
 
 	public void windowClosing(WindowEvent we) {
+		running = false;
 		System.exit(0);
-
 	}
 
 	
