@@ -14,7 +14,7 @@ This wiki page is a user guide. The game is quite simple, but here's a reminder 
 Here are the controls. You can't change them, sorry :
 
   * *UP*, *DOWN*, *LEFT*, *RIGHT* arrows : Control your snake
-  * *SPACE* : Pause the game
+  * *SPACE* : Pause the game (resume by pressing any key)
   * *ESCAPE* : Exit the game
   * *F11* : Switch to/from a bigger frame
 
