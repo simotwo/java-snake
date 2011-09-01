@@ -154,7 +154,7 @@ public class Main implements KeyListener, WindowListener {
 		do {
 			do {
 				graph = strategy.getDrawGraphics();
-        ((Graphics2D)graph).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+				((Graphics2D)graph).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 				// Draw Background
 				graph.setColor(Color.WHITE);
